@@ -1,0 +1,45 @@
+version: "3.9"
+services:
+  app:
+    build:
+      args:
+        - target=deploy
+    environment:
+      TODO_ENV: dev
+      APP_PORT: 8080
+      TODO_DB_HOST: todo-db
+      TODO_DB_PORT: 3306
+      TODO_DB_USER: todo
+      TODO_DB_PASSWORD: todo
+      TODO_DB_DATABASE: todo
+      # アプリケーションがRedisへの接続情報を読み込むための環境変数を追加する
+      TODO_REDIS_HOST: todo-redis
+      TODO_REDIS_PORT: 6379
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+  db:
+    image: mysql:8.0.29
+    platform: linux/amd64
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_USER: hoge
+      MYSQL_PASSWORD: hoge
+      MYSQL_DATABASE: hoge_development
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./src/config/mysql/conf:/etc/mysql/conf.d:cached
+      - ./src/seed/sqls:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  db-data:
+  redis-data:
