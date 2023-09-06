@@ -29,6 +29,7 @@ func NewRequest(method string, targetPath string, httpVersion string, headers ma
 }
 
 func getCookiesByHeaders(headers map[string]string) map[string]*Cookie {
+	// これregexじゃなくても、strings.splitの方がシンプルだったかも
 	cookies := map[string]*Cookie{}
 	if value, isThere := headers["Cookie"]; isThere {
 		re := regexp.MustCompile("; ")

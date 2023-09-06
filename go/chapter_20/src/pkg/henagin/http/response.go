@@ -92,7 +92,7 @@ func (response *Response) SetHeader(name, value string) {
 	response.Headers = append(response.Headers, NewHeader(name, value))
 }
 
-func (response *Response) SetCookieHeader(value string) {
-	value = fmt.Sprintf("%s; %s", value, "HttpOnly")
-	response.SetHeader("Set-Cookie", value)
+func (response *Response) SetCookieHeader(key, value string) {
+	fieldValue := fmt.Sprintf("%s=%s; %s", key, value, "HttpOnly")
+	response.SetHeader("Set-Cookie", fieldValue)
 }

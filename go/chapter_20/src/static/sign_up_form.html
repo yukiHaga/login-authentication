@@ -1,0 +1,15 @@
+<html>
+<body>
+<!-- action属性で指定するURLについて、ホストやポートを省略すると、現在開いているページと同じホスト/ポートへ送信されます。-->
+<!-- もしくはaction属性自体を省略すると、現在開いているページのホスト/ポート/パスに対して送信される -->
+<!-- 本来ならログインフォームだから認証が必要 -->
+<h1>サインアップフォーム</h1>
+<form action="/sign_up" method="post">
+  名前: <input name="name" type="text" /><br>
+  メールアドレス: <input name="email" type="email"/> <br>
+  パスワード: <input name="password" type="password"/> <br>
+  パスワード(確認用): <input name="password_confirmation" type="password"/> <br>
+  <input name="submit_name" type="submit" value="送信">
+</form>
+</body>
+</html>

@@ -13,8 +13,7 @@ import (
 // 呼び出し時にキーワード引数で渡せたら最高だけど、なんかめんどくさそうだからやめた。ビューで使われる変数の順番を覚えていないと使えないのがネック
 func Render(templatePath string, context ...any) []byte {
 	root, _ := settings.GetTemplateRoot()
-	bytes, err := os.ReadFile(path.Join(root, templatePath))
-	fmt.Println("エラー", err)
+	bytes, _ := os.ReadFile(path.Join(root, templatePath))
 	fileContent := string(bytes)
 
 	re := regexp.MustCompile(`{(.+?)}`)

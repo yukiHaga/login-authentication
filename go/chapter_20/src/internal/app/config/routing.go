@@ -22,6 +22,7 @@ var Routing = []*pattern.URLPattern{
 	pattern.NewURLPattern("/cookie_request", controller.NewCookieRequest()),
 	pattern.NewURLPattern("/login", controller.NewLogin()),
 	pattern.NewURLPattern("/mypage", controller.NewMyPage()),
+	pattern.NewURLPattern("/sign_up", controller.NewSignUp()),
 }
 
 // // URLパラメータを扱うのでこっちのデータ構造を採用した
