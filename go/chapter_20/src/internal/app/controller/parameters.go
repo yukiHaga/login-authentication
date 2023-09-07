@@ -7,8 +7,8 @@ import (
 	"path"
 
 	"github.com/yukiHaga/web_server/src/internal/app/config/settings"
-	"github.com/yukiHaga/web_server/src/internal/app/view"
 	"github.com/yukiHaga/web_server/src/pkg/henagin/http"
+	"github.com/yukiHaga/web_server/src/pkg/henagin/view"
 )
 
 type Parameters struct{}

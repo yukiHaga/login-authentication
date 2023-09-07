@@ -96,3 +96,7 @@ func (response *Response) SetCookieHeader(key, value string) {
 	fieldValue := fmt.Sprintf("%s=%s; %s", key, value, "HttpOnly")
 	response.SetHeader("Set-Cookie", fieldValue)
 }
+
+func (response *Response) SetRedirectHeader(path string) {
+	response.SetHeader("Location", path)
+}

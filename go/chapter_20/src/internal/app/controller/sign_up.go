@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"os"
-	"path"
 
-	"github.com/yukiHaga/web_server/src/internal/app/config/settings"
 	"github.com/yukiHaga/web_server/src/internal/app/model"
 	"github.com/yukiHaga/web_server/src/pkg/henagin/http"
+	"github.com/yukiHaga/web_server/src/pkg/henagin/view"
 )
 
 type SignUp struct{}
@@ -19,35 +17,22 @@ func NewSignUp() *SignUp {
 }
 
 func (c *SignUp) Action(request *http.Request) *http.Response {
-	STATIC_ROOT, _ := settings.GetStaticRoot()
 	var statusCode string
 	var reasonPhrase string
 	var body []byte
 	cookieHeaders := map[string]string{}
 
 	if request.Method == http.Get {
-		if cookie, isThere := request.GetCookieByName("user_id"); isThere {
-			id, _ := url.QueryUnescape(cookie.Value)
-			_, err := model.FindUserById(id)
-			if err != nil {
-				log.Printf("fail to find error: %v", err)
-				body, _ = os.ReadFile(path.Join(STATIC_ROOT, "sign_up_form.html"))
-				statusCode = http.StatusInternalServerErrorCode
-				reasonPhrase = http.StatusReasonInternalServerError
-			} else {
-				statusCode = http.StatusRedirectCode
-				reasonPhrase = http.StatusReasonRedirect
-			}
-		} else {
-			body, _ = os.ReadFile(path.Join(STATIC_ROOT, "sign_up_form.html"))
-			statusCode = http.StatusSuccessCode
-			reasonPhrase = http.StatusReasonOk
-		}
+		// ミドルウェアを通ってきたので、クッキーが存在しないことは確定
+		// ゆえにクッキーを取得する処理は書かなくて良い
+		// 何も埋め込んでいなないなら、普通にファイルを開くのか。
+		body = view.Render("sign_up_form.html")
+		statusCode = http.StatusSuccessCode
+		reasonPhrase = http.StatusReasonOk
 	} else if request.Method == http.Post {
 		// ユーザー登録をここでする
 		// emailがユニークであることを確認する。あとパスワードがちゃんと一致しているか
 		// okなら、ユーザーデータをインサートして、クッキーにuser_idを入れる(本当はあんま良くない。セッションidにした方が良い)、
-
 		decodedBody, _ := url.QueryUnescape(string(request.Body))
 		// 正規表現使わなくて済む
 		values, _ := url.ParseQuery(decodedBody)
@@ -60,7 +45,7 @@ func (c *SignUp) Action(request *http.Request) *http.Response {
 
 		if err := user.SignUp(password, passwordConfirmation); err != nil {
 			log.Printf("fail to save user: %v\n", err)
-			body, _ = os.ReadFile(path.Join(STATIC_ROOT, "sign_up_form.html"))
+			body = view.Render("sign_up_form.html")
 			statusCode = http.StatusInternalServerErrorCode
 			reasonPhrase = http.StatusReasonInternalServerError
 		} else {
@@ -79,13 +64,11 @@ func (c *SignUp) Action(request *http.Request) *http.Response {
 		body,
 	)
 
-	if statusCode == http.StatusRedirectCode {
-		if request.Method == http.Post {
-			for key, value := range cookieHeaders {
-				response.SetCookieHeader(key, value)
-			}
+	if request.Method == http.Post && statusCode == http.StatusRedirectCode {
+		for key, value := range cookieHeaders {
+			response.SetCookieHeader(key, value)
 		}
-		response.SetHeader("Location", "/mypage")
+		response.SetRedirectHeader("/mypage")
 	}
 
 	return response

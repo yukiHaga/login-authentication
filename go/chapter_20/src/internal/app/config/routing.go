@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/yukiHaga/web_server/src/internal/app/controller"
 	// 循環インポートだるいな
+	"github.com/yukiHaga/web_server/src/internal/app/middleware"
 	"github.com/yukiHaga/web_server/src/pkg/henagin/urls/pattern"
 )
 
@@ -20,9 +21,10 @@ var Routing = []*pattern.URLPattern{
 	pattern.NewURLPattern("/parameters", controller.NewParameters()),
 	pattern.NewURLPattern("/users/:id/profile", controller.NewUserProfile()),
 	pattern.NewURLPattern("/cookie_request", controller.NewCookieRequest()),
-	pattern.NewURLPattern("/login", controller.NewLogin()),
-	pattern.NewURLPattern("/mypage", controller.NewMyPage()),
-	pattern.NewURLPattern("/sign_up", controller.NewSignUp()),
+	// ユーザーリクエストをパースして作成したリクエストオブジェクトをコントローラアクションに渡す前に、認証のミドルウェアを挟み込む
+	pattern.NewURLPattern("/sign_up", middleware.CheckLogout(controller.NewSignUp())),
+	pattern.NewURLPattern("/login", middleware.CheckLogout(controller.NewLogin())),
+	pattern.NewURLPattern("/mypage", middleware.CheckLogin(controller.NewMyPage())),
 }
 
 // // URLパラメータを扱うのでこっちのデータ構造を採用した
