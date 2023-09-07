@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"regexp"
 )
 
@@ -42,8 +41,6 @@ func getCookiesByHeaders(headers map[string]string) map[string]*Cookie {
 			cookies[name] = NewCookie(name, value)
 		}
 	}
-
-	fmt.Println("cookies", cookies)
 
 	return cookies
 }

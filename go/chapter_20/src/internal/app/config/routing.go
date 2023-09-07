@@ -25,6 +25,7 @@ var Routing = []*pattern.URLPattern{
 	pattern.NewURLPattern("/sign_up", middleware.CheckLogout(controller.NewSignUp())),
 	pattern.NewURLPattern("/login", middleware.CheckLogout(controller.NewLogin())),
 	pattern.NewURLPattern("/mypage", middleware.CheckLogin(controller.NewMyPage())),
+	pattern.NewURLPattern("/logout", middleware.CheckLogin(controller.NewLogout())),
 }
 
 // // URLパラメータを扱うのでこっちのデータ構造を採用した

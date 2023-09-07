@@ -114,7 +114,7 @@ func FindUserByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
-func FindUserById(userId string) (*User, error) {
+func FindUserById(userId UserId) (*User, error) {
 	db, err := db.NewDB()
 	if err != nil {
 		return nil, err

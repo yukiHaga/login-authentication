@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/url"
 
+	"github.com/yukiHaga/web_server/src/internal/app/auth"
 	"github.com/yukiHaga/web_server/src/internal/app/model"
 	"github.com/yukiHaga/web_server/src/pkg/henagin/http"
 	"github.com/yukiHaga/web_server/src/pkg/henagin/view"
@@ -49,9 +50,13 @@ func (c *SignUp) Action(request *http.Request) *http.Response {
 			statusCode = http.StatusInternalServerErrorCode
 			reasonPhrase = http.StatusReasonInternalServerError
 		} else {
+			// サインアップに成功した
 			statusCode = http.StatusRedirectCode
 			reasonPhrase = http.StatusReasonRedirect
-			cookieHeaders["user_id"] = fmt.Sprintf("%v", user.Id)
+			session := auth.NewSession()
+			fmt.Println("サインアップ成功時のユーザーid", user.Id)
+			sessionId, _ := session.Save(user.Id)
+			cookieHeaders["session_id"] = string(sessionId)
 		}
 	}
 

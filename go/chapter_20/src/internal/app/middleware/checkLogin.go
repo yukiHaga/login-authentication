@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"log"
-	"net/url"
 
+	"github.com/yukiHaga/web_server/src/internal/app/auth"
 	"github.com/yukiHaga/web_server/src/internal/app/controller"
 	"github.com/yukiHaga/web_server/src/internal/app/model"
 	"github.com/yukiHaga/web_server/src/pkg/henagin/http"
@@ -15,9 +15,10 @@ type CheckLoginController struct {
 
 // ログインユーザー専用のページをリクエストした場合、ユーザーidのクッキーがないならログインページにリダイレクトさせる
 func (c CheckLoginController) Action(request *http.Request) *http.Response {
-	if cookie, isThere := request.GetCookieByName("user_id"); isThere {
-		id, _ := url.QueryUnescape(cookie.Value)
-		_, err := model.FindUserById(id)
+	if cookie, isThere := request.GetCookieByName("session_id"); isThere {
+		session := auth.NewSession()
+		userId, _ := session.Load(cookie.Value)
+		_, err := model.FindUserById(userId)
 		// user_idクッキーはあるけど不正な場合
 		// ログインページにリダイレクトさせる
 		if err != nil {

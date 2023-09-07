@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"fmt"
 	"log"
 	"net/url"
 
+	"github.com/yukiHaga/web_server/src/internal/app/auth"
 	"github.com/yukiHaga/web_server/src/internal/app/model"
 	"github.com/yukiHaga/web_server/src/pkg/henagin/http"
 	"github.com/yukiHaga/web_server/src/pkg/henagin/view"
@@ -53,10 +53,13 @@ func (c *Login) Action(request *http.Request) *http.Response {
 			statusCode = http.StatusInternalServerErrorCode
 			reasonPhrase = http.StatusReasonInternalServerError
 		} else {
+			// ログインに成功した
 			statusCode = http.StatusRedirectCode
 			reasonPhrase = http.StatusReasonRedirect
+			session := auth.NewSession()
+			sessionId, _ := session.Save(user.Id)
 			// ここでレスポンスにヘッダーセットできたなら最高
-			cookieHeaders["user_id"] = fmt.Sprintf("%v", user.Id)
+			cookieHeaders["session_id"] = string(sessionId)
 		}
 	}
 

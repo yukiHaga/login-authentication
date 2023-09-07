@@ -1,8 +1,9 @@
 package http
 
 const (
-	Get  = "GET"
-	Post = "POST"
+	Get    = "GET"
+	Post   = "POST"
+	DELETE = "DELETE"
 )
 
 const VersionsFor11 = "HTTP/1.1"

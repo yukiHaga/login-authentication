@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"log"
-	"net/url"
 
+	"github.com/yukiHaga/web_server/src/internal/app/auth"
 	"github.com/yukiHaga/web_server/src/internal/app/controller"
 	"github.com/yukiHaga/web_server/src/internal/app/model"
 	"github.com/yukiHaga/web_server/src/pkg/henagin/http"
@@ -16,9 +16,10 @@ type CheckLogoutController struct {
 // このミドルウェアは/loginと/sign_upのエンドポイントで使う
 // ログインユーザーがログインページをやサインアップページリクエストした場合、ユーザーidのクッキーがあるなら、マイページへリダイレクトさせる
 func (c CheckLogoutController) Action(request *http.Request) *http.Response {
-	if cookie, isThere := request.GetCookieByName("user_id"); isThere {
-		id, _ := url.QueryUnescape(cookie.Value)
-		_, err := model.FindUserById(id)
+	if cookie, isThere := request.GetCookieByName("session_id"); isThere {
+		session := auth.NewSession()
+		userId, _ := session.Load(cookie.Value)
+		_, err := model.FindUserById(userId)
 		// user_idクッキーはあるけど不正な場合(ユーザーが存在しない)
 		// そのまま/loginと/sing_upのアクションにリクエストオブジェクトを渡す
 		if err != nil {

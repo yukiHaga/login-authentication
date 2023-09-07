@@ -6,5 +6,31 @@
 </head>
 <body>
   <h1>こんにちわ {now} さん</h1>
+  <button id="logout">ログアウト</button>
+
+  <script>
+    document.getElementById("logout").addEventListener("click", async function() {
+      try {
+        const response = await fetch("/logout", {
+          method: "DELETE",
+        })
+
+        // ブラウザが勝手にリダイレクトしてくれるはず
+        // リダイレクト後になぜかDELETEメソッドを引き継いで、DELETEでログインページにリダイレクトしやがった
+        // おそらくブラウザの仕様的に無理なのかもしれない。なので、DELETEでOKを返すようにした
+        if (response.status == 200) {
+          // 同一ドメイン内であればパスを指定することで、そのドメインに属するページに遷移することができます。
+          location.href = "/login"
+
+        } else {
+          throw new Error("Network response was not ok")
+        }
+
+      } catch (error) {
+        console.error('DELETEリクエストが失敗しました', error);
+      }
+    })
+
+  </script>
 </body>
 </html>
